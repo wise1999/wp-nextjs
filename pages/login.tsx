@@ -1,7 +1,7 @@
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { signIn } from "next-auth/react"
 import useAuth from '@/middleware/useAuth';
 const loginSchema = object({
@@ -16,6 +16,8 @@ export type LoginInput = TypeOf<typeof loginSchema>;
 
 export default function Login() {
   const isAuthenticated = useAuth(true);
+  const [submitError, setSubmitError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const methods = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -24,13 +26,13 @@ export default function Login() {
     register,
     handleSubmit,
     reset,
-    setError,
     formState: { isSubmitSuccessful, errors },
   } = methods;
 
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset();
+      setIsSubmitting(false)
     }
 
   }, [isSubmitSuccessful]);
@@ -43,11 +45,10 @@ export default function Login() {
     })
 
     if (res?.error) {
-      setError('submit' as any, {
-        type: "server",
-        message: res.error
-      });
+      setSubmitError(res.error)
     }
+
+    setIsSubmitting(true)
   };
 
   return (
@@ -62,15 +63,10 @@ export default function Login() {
             <input {...register("password", { required: true })} type="password" name="password" placeholder="Enter a password" />
             {errors.password?.message && <span className="block">{errors.password?.message}</span>}
           </div>
-          <button type="submit">Log In</button>
+          <button disabled={isSubmitting} type="submit">Log In</button>
         </form>
-        {errors.submit?.message && <span className="block">{errors.submit?.message}</span>}
+        {submitError && <span className="block">{submitError}</span>}
       </FormProvider>
     </>
   )
 }
-
-const SignInError = ({ error }) => {
-  const errorMessage = error;
-  return <div>{errorMessage}</div>;
-};

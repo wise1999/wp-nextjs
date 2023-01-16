@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { signIn } from "next-auth/react"
 import useAuth from '@/middleware/useAuth';
+
 const loginSchema = object({
   email: string()
     .min(1, 'Email address is required')
@@ -15,6 +16,7 @@ const loginSchema = object({
 export type LoginInput = TypeOf<typeof loginSchema>;
 
 export default function Login() {
+  const isAuthenticated = useAuth(true);
   const [submitError, setSubmitError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 

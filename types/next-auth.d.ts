@@ -11,6 +11,9 @@ declare module "next-auth" {
     accessTokenExpiry: number,
     error: string,
   }
+  interface Profile {
+
+  }
 
 }
 

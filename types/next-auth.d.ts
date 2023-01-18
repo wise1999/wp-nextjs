@@ -11,9 +11,6 @@ declare module "next-auth" {
     accessTokenExpiry: number,
     error: string,
   }
-  interface Profile {
-
-  }
 
 }
 
@@ -25,5 +22,4 @@ declare module "next-auth/jwt" {
     exp: number,
     error: string,
   }
-
 }

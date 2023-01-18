@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Footer from "./Footer";
 import Header from "./Header";
-import { CssBaseline } from '@nextui-org/react';
 
 export default function Layout({ children }: React.PropsWithChildren<{}>) {
 

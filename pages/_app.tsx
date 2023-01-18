@@ -5,7 +5,7 @@ import { useState } from "react";
 import RefreshTokenHandler from "@/components/refreshTokenHandler";
 import { QueryClientProvider, QueryClient } from 'react-query';
 import Layout from "@/components/global/Layout";
-import { createTheme, NextUIProvider } from '@nextui-org/react';
+import '../styles/main.scss'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,12 +15,6 @@ const queryClient = new QueryClient({
   },
 });
 
-const darkTheme = createTheme({
-  type: 'dark',
-  theme: {
-    colors: {}
-  }
-});
 
 export default function App({
   Component,
@@ -31,11 +25,9 @@ export default function App({
   return (
     <QueryClientProvider client={queryClient} >
       <SessionProvider session={session} refetchInterval={interval}>
-        <NextUIProvider theme={darkTheme}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </NextUIProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
         <RefreshTokenHandler setInterval={setInterval} />
       </SessionProvider>
     </QueryClientProvider >

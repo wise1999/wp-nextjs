@@ -5,7 +5,7 @@ import { useState } from "react";
 import RefreshTokenHandler from "@/components/refreshTokenHandler";
 import { QueryClientProvider, QueryClient } from 'react-query';
 import Layout from "@/components/global/Layout";
-import '../styles/main.scss'
+import '../styles/globals.css'
 
 const queryClient = new QueryClient({
   defaultOptions: {

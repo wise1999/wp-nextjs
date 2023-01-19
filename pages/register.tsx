@@ -24,7 +24,7 @@ const registerSchema = object({
 
 export type RegisterInput = TypeOf<typeof registerSchema>;
 
-export default function Login() {
+function Register() {
   const router = useRouter()
   const isAuthenticated = useAuth(true);
   const [submitError, setSubmitError] = useState('');
@@ -125,4 +125,6 @@ export default function Login() {
   )
 }
 
+Register.layout = "Main"
 
+export default Register

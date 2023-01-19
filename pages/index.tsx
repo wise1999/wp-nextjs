@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 
-export default function Home() {
+function Home() {
   const session = useSession();
 
   return (
@@ -20,3 +20,7 @@ export default function Home() {
     </>
   )
 }
+
+Home.layout = "Main"
+
+export default Home

@@ -16,7 +16,7 @@ const loginSchema = object({
 
 export type LoginInput = TypeOf<typeof loginSchema>;
 
-export default function Login() {
+function Login() {
   const isAuthenticated = useAuth(true);
   const [submitError, setSubmitError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -105,3 +105,7 @@ export default function Login() {
     </>
   )
 }
+
+Login.layout = "Main"
+
+export default Login

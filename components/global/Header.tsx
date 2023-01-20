@@ -30,7 +30,7 @@ export default function Header() {
         </Link>
         <div className="relative hidden space-x-1 lg:inline-flex" >
           <div className="relative">
-            <Link href="#" className="rounded-full btn btn-sm btn-white">Pricing</Link>
+            <Link href="/blog" className="rounded-full btn btn-sm btn-white">Blog</Link>
             <Link href="#" className="rounded-full btn btn-sm btn-white">Pricing</Link>
             <Link href="#" className="rounded-full btn btn-sm btn-white">Pricing</Link>
           </div>

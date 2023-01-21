@@ -5,7 +5,12 @@ export interface GenericResponse {
 
 export interface PostType {
   id: number;
+  slug: string;
   date: string;
+  featured_image: {
+    url: string;
+    alt: string;
+  };
   title: {
     rendered: string
   };
@@ -15,4 +20,5 @@ export interface PostType {
   excerpt: {
     rendered: string
   };
+  author: string;
 }

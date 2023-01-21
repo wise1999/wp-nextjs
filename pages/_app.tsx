@@ -4,6 +4,7 @@ import type { Session } from "next-auth"
 import { useState } from "react";
 import RefreshTokenHandler from "@/components/refreshTokenHandler";
 import { QueryClientProvider, QueryClient, Hydrate } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools'
 import Layout from "@/components/global/Layout";
 import ProfileLayout from "@/components/profile/ProfileLayout";
 import '../styles/globals.css'
@@ -35,6 +36,7 @@ export default function App({
           <RefreshTokenHandler setInterval={setInterval} />
         </SessionProvider>
       </Hydrate>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider >
   )
 }

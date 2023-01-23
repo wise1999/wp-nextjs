@@ -64,9 +64,9 @@ export default function ProfileLayout({ children }: React.PropsWithChildren<{}>)
           </div>
         </div>
       </header>
-      <main className="flex min-h-screen bg-gray-50">
+      <main className="flex min-h-screen bg-gray-50 w-full">
         <Dashboard openMenu={isMenuOpen} />
-        <div className="ml-0 transition md:ml-60">{children}</div>
+        <div className="ml-0 transition md:ml-60 w-full">{children}</div>
       </main>
     </>
   )

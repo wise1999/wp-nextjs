@@ -14,13 +14,13 @@ export default function Post({ post }: AppProps) {
   return (
     <div>
       <Link href={`/post/${slug}`}>
-        <Image
+        {featured_image && <Image
           src={featured_image.url}
           alt={featured_image.alt}
           width={440}
           height={225}
           className="object-cover w-full h-56 mb-5 bg-center rounded"
-        />
+        />}
       </Link>
       <h2 className="mb-2 text-lg font-semibold text-gray-900">
         <Link href={`/post/${slug}`} className="text-gray-900 hover:text-purple-700">{title.rendered}</Link>

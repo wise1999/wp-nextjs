@@ -56,6 +56,7 @@ export const authOptions: NextAuthOptions = {
         const decodedToken = jwt_decode(token.data.jwt) as JWT
 
         return {
+          userId: decodedToken.id,
           name: decodedToken.username,
           email: decodedToken.email,
           accessToken: token.data.jwt,
@@ -67,6 +68,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
+        token.userId = user.userId;
         token.name = user.name;
         token.email = user.email;
         token.accessToken = user.accessToken;
@@ -85,6 +87,7 @@ export const authOptions: NextAuthOptions = {
     },
 
     session: async ({ session, token }) => {
+      session.userId = token.userId;
       session.accessToken = token.accessToken;
       session.accessTokenExpiry = token.accessTokenExpiry;
       session.error = token?.error;

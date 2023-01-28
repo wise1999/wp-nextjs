@@ -27,6 +27,21 @@ export const getPosts = async (page: number) => {
   }
 }
 
+export const getPostsByAuthor = async (authorId: number) => {
+  try {
+    const response = await fetch(API_URL + 'wp-json/wp/v2/posts?author=' + authorId, {
+      method: 'GET',
+      headers: { "Content-Type": "application/json" }
+    })
+
+    const data = await response.json();
+    return data;
+
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
 export const getPostBySlug = async (slug: string) => {
   const response = await fetch(API_URL + "wp-json/wp/v2/posts?slug=" + slug, {
     method: 'GET',
@@ -84,6 +99,22 @@ export const updatePost = async (post: EditPostInput) => {
       content: post.content,
       status: 'publish',
     })
+  })
+
+  return await response.json();
+}
+
+export const deletePost = async (postId: number) => {
+  const session = await getSession();
+
+  if (!session) return
+
+  const response = await fetch(API_URL + "wp-json/wp/v2/posts/" + postId, {
+    method: 'DELETE',
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + session.accessToken
+    }
   })
 
   return await response.json();

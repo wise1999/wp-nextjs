@@ -28,19 +28,19 @@ function ProfileArticles() {
     (postId: number) => deletePost(postId), {
     onMutate: async (postId) => {
 
-      await queryClient.cancelQueries(['postsByAuthor', userId]);
+      await queryClient.cancelQueries(['postsByAuthor', data]);
 
-      const previousTasks = queryClient.getQueryData(['postsByAuthor', userId]);
+      const previousTasks = queryClient.getQueryData(['postsByAuthor']);
 
-      //queryClient.setQueryData(['postsByAuthor', userId], (old: any) => old.filter((post: PostType) => post.id !== postId));
+      queryClient.setQueryData(['postsByAuthor'], (old: any) => old.filter((post: PostType) => post.id !== postId));
 
       return { previousTasks };
     },
     onError: (err, postId, context) => {
-      queryClient.setQueryData(['postsByAuthor', userId], context.previousTasks);
+      queryClient.setQueryData(['postsByAuthor'], context.previousTasks);
     },
     onSettled: (newData, error) => {
-      queryClient.invalidateQueries(['postsByAuthor', userId]);
+      queryClient.invalidateQueries(['postsByAuthor']);
     },
   }
   );

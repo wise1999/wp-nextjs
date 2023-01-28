@@ -1,6 +1,5 @@
 import { useQuery } from 'react-query';
 import { getPostBySlug, getPosts, getPostById, getPostsByAuthor, deletePost } from '@/pages/api/posts';
-import { PostInput } from '@/pages/profile/articles/new';
 
 export const usePosts = (page: number) => {
   return useQuery(['posts'], () => getPosts(page));

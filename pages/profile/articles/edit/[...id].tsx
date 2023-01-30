@@ -4,7 +4,7 @@ import Link from "next/link"
 import { coerce, object, string, TypeOf } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GetServerSideProps } from "next";
 import { dehydrate, QueryClient, useMutation } from 'react-query'; import { useRouter } from "next/router";
 import { usePostById } from "@/hooks/posts";
@@ -29,7 +29,8 @@ function ProfileArticlesEdit({ id }: PostType) {
 
   const [submitMessage, setSubmitMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [featuredImage, setFeaturedImage] = useState(null)
+  const [featuredImage, setFeaturedImage] = useState('')
+  const imgInput = useRef(null);
 
   const methods = useForm<EditPostInput>({
     resolver: zodResolver(postSchema),
@@ -65,6 +66,17 @@ function ProfileArticlesEdit({ id }: PostType) {
     setIsSubmitting(true)
     update(values)
   };
+
+  const previewImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(e.target.files[0]);
+
+    fileReader.onload = (event) => {
+      if (!event?.target?.result) return
+      setFeaturedImage(event.target.result as string);
+    };
+  }
 
   if (isLoading) return <div>Loading...</div>
 
@@ -114,7 +126,7 @@ function ProfileArticlesEdit({ id }: PostType) {
               </div>
               <div>
                 <label className="block text-sm mb-2">Featured Image</label>
-                {featured_image && <div className="w-1/3">
+                {featured_image && !featuredImage && <div className="w-1/3">
                   <Image
                     src={featured_image.url}
                     alt={featured_image.alt}
@@ -122,8 +134,18 @@ function ProfileArticlesEdit({ id }: PostType) {
                     height={225}
                     className="object-cover w-full h-56 mb-5 bg-center rounded"
                   /></div>}
-                <label className="form-input cursor-pointer" htmlFor="basicfile">
-                  <input type="file" className="sr-only" id="basicfile" />
+
+                {featuredImage && <div className="w-1/3">
+                  <Image
+                    src={featuredImage}
+                    alt={featured_image.alt}
+                    width={440}
+                    height={225}
+                    className="object-cover w-full h-56 mb-5 bg-center rounded"
+                  />
+                </div>}
+                <label className="form-input cursor-pointer" htmlFor="featuredImg">
+                  <input ref={imgInput} onChange={previewImage} type="file" className="sr-only" id="featuredImg" />
                   <span>Choose file...</span>
                 </label>
               </div>

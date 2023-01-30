@@ -1,26 +1,22 @@
-import Post from "@/components/Post"
 import { usePostsByAuthor } from "@/hooks/posts"
 import { authOptions } from "@/pages/api/auth/[...nextauth]"
 import { deletePost, getPostsByAuthor } from "@/pages/api/posts"
 import { PostType } from "@/types"
+import { Session } from "inspector"
 import { GetServerSideProps } from "next"
-import { unstable_getServerSession } from "next-auth"
-import { getSession, useSession } from "next-auth/react"
+import { unstable_getServerSession, User } from "next-auth"
+import { useSession } from "next-auth/react"
 import Link from "next/link"
+import { useEffect } from "react"
 import {
   dehydrate,
   QueryClient,
-  QueryClientProvider,
   useMutation,
-  useQuery,
   useQueryClient
 } from "react-query";
 
-function ProfileArticles() {
+function ProfileArticles({ userId }: User) {
   const queryClient = useQueryClient()
-  const { data: session } = useSession();
-
-  const userId = session ? session.userId : 0;
 
   const { data, isLoading } = usePostsByAuthor(userId);
 
@@ -37,7 +33,7 @@ function ProfileArticles() {
       return { previousTasks };
     },
     onError: (err, postId, context) => {
-      queryClient.setQueryData(['postsByAuthor'], context.previousTasks);
+      queryClient.setQueryData(['postsByAuthor'], context?.previousTasks);
     },
     onSettled: (newData, error) => {
       queryClient.invalidateQueries(['postsByAuthor']);
@@ -102,6 +98,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
+      userId: userId,
     },
   }
 }

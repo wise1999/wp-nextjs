@@ -1,7 +1,7 @@
 import { TINYMCE_KEY } from "@/constants/index"
 import { Editor } from "@tinymce/tinymce-react"
 import Link from "next/link"
-import { coerce, number, object, string, TypeOf } from 'zod';
+import { coerce, object, string, TypeOf } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { useEffect, useState } from "react";
@@ -9,6 +9,9 @@ import { GetServerSideProps } from "next";
 import { dehydrate, QueryClient, useMutation } from 'react-query'; import { useRouter } from "next/router";
 import { usePostById } from "@/hooks/posts";
 import { getPostById, updatePost } from "@/pages/api/posts";
+import { PostInput } from "../new";
+import { PostType } from "@/types";
+import Image from "next/image";
 
 const postSchema = object({
   postId: coerce
@@ -21,14 +24,12 @@ const postSchema = object({
 
 export type EditPostInput = TypeOf<typeof postSchema>;
 
-function ProfileArticlesEdit() {
-  const router = useRouter();
-  const id = router.query?.id ? parseInt(router.query?.id[0]) : 0;
-
+function ProfileArticlesEdit({ id }: PostType) {
   const { data, isLoading } = usePostById(id)
 
   const [submitMessage, setSubmitMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [featuredImage, setFeaturedImage] = useState(null)
 
   const methods = useForm<EditPostInput>({
     resolver: zodResolver(postSchema),
@@ -67,14 +68,14 @@ function ProfileArticlesEdit() {
 
   if (isLoading) return <div>Loading...</div>
 
-  const { title, content } = data
+  const { title, content, featured_image } = data
 
   return (
     <>
       <section className="min-h-screen bg-gray-50 flex w-full">
         <div className="flex flex-col py-10 px-8 w-full">
           <div className="flex wrap items-center justify-between mb-4">
-            <h2 className="mb-2 text-3xl font-extrabold leading-tight text-gray-900">Edit Article: </h2>
+            <h2 className="mb-2 text-3xl font-extrabold leading-tight text-gray-900">Edit Article: {title.rendered}</h2>
             <Link href="/profile/articles" className="btn btn-primary">Go Back</Link>
           </div>
           <FormProvider {...methods}>
@@ -111,6 +112,21 @@ function ProfileArticlesEdit() {
                 <textarea {...register("content", { required: true })} defaultValue={content.rendered} className="hidden" name="content" />
                 {errors.content?.message && <span className="block text-primary text-sm font-semibold mt-2">{errors.content?.message}</span>}
               </div>
+              <div>
+                <label className="block text-sm mb-2">Featured Image</label>
+                {featured_image && <div className="w-1/3">
+                  <Image
+                    src={featured_image.url}
+                    alt={featured_image.alt}
+                    width={440}
+                    height={225}
+                    className="object-cover w-full h-56 mb-5 bg-center rounded"
+                  /></div>}
+                <label className="form-input cursor-pointer" htmlFor="basicfile">
+                  <input type="file" className="sr-only" id="basicfile" />
+                  <span>Choose file...</span>
+                </label>
+              </div>
               <button className="btn btn-light-primary mx-auto" type="submit" disabled={isSubmitting}>Update</button>
             </form>
           </FormProvider>
@@ -126,7 +142,16 @@ ProfileArticlesEdit.layout = "Profile"
 export default ProfileArticlesEdit
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = context.params?.id ? parseInt(context.params?.id[0]) : 0;
+  const id = context?.params?.id ? parseInt(context.params.id[0]) : null;
+
+  if (!id) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
   const queryClient = new QueryClient();
 
@@ -135,6 +160,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
+      id
     },
   }
 }

@@ -53,13 +53,13 @@ export const getPostBySlug = async (slug: string) => {
 }
 
 export const getPostById = async (id: number) => {
-  const response = await fetch(API_URL + "wp-json/wp/v2/posts?id=" + id, {
+  const response = await fetch(API_URL + "wp-json/wp/v2/posts/" + id, {
     method: 'GET',
     headers: { "Content-Type": "application/json" }
   })
 
   const data = await response.json();
-  return data[0];
+  return data;
 }
 
 export const createPost = async (post: PostInput) => {
